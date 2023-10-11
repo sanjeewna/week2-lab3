@@ -1,5 +1,6 @@
-const express = require('express');
+const express = require("express");
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 // Import pets data from the pets.js module
@@ -9,6 +10,22 @@ const petsData = require('./pets');
 app.get('/pets', (req, res) => {
     res.json(petsData);
   });
+
+  // POST endpoint to add a new pet
+app.post('/pets', (req, res) => {
+  const newPet = req.body; // The new pet data sent in the request body
+
+  // Ensure that the new pet has the required properties (id, name, species, age)
+  if (!newPet.id || !newPet.name || !newPet.species || !newPet.age) {
+    return res.status(400).json({ error: 'Invalid pet data' });
+  }
+
+  // Add the new pet to the petsData array
+  petsData.push(newPet);
+
+  // Respond with a success message
+  res.status(201).json({ message: 'Pet added successfully', pet: newPet });
+});
   
   // GET endpoint to retrieve the count of all pets
   app.get('/pets/count', (req, res) => {
